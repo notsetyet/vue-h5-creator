@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Camera, Send, Bot, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import QuickActionCards from "./QuickActionCards";
 
 interface Message {
   id: string;
@@ -144,81 +144,79 @@ const AIChat = () => {
   };
 
   return (
-    <Card className="h-[calc(100vh-16rem)]">
-      <CardHeader>
-        <CardTitle>智能饮食助手</CardTitle>
-        <CardDescription>与AI对话，获取个性化饮食建议</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col h-[calc(100%-8rem)]">
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-4">
-          {messages.map((message) => (
+    <div className="h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex gap-2 ${
+              message.role === "user" ? "flex-row-reverse" : "flex-row"
+            }`}
+          >
             <div
-              key={message.id}
-              className={`flex gap-3 ${
-                message.role === "user" ? "flex-row-reverse" : "flex-row"
+              className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                message.role === "user"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-secondary-foreground"
               }`}
             >
+              {message.role === "user" ? (
+                <User className="h-4 w-4" />
+              ) : (
+                <Bot className="h-4 w-4" />
+              )}
+            </div>
+            <div
+              className={`flex-1 max-w-[75%] ${
+                message.role === "user" ? "text-right" : "text-left"
+              }`}
+            >
+              {message.image && (
+                <img
+                  src={message.image}
+                  alt="上传的食物图片"
+                  className="max-w-full h-auto rounded-lg mb-2 border border-border"
+                />
+              )}
               <div
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                className={`inline-block p-3 rounded-2xl ${
                   message.role === "user"
                     ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-secondary-foreground"
+                    : "bg-muted text-foreground"
                 }`}
               >
-                {message.role === "user" ? (
-                  <User className="h-4 w-4" />
-                ) : (
-                  <Bot className="h-4 w-4" />
-                )}
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
-              <div
-                className={`flex-1 max-w-[80%] ${
-                  message.role === "user" ? "text-right" : "text-left"
-                }`}
-              >
-                {message.image && (
-                  <img
-                    src={message.image}
-                    alt="上传的食物图片"
-                    className="max-w-full h-auto rounded-lg mb-2 border border-border"
-                  />
-                )}
-                <div
-                  className={`inline-block p-3 rounded-lg ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-foreground"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {message.timestamp.toLocaleTimeString("zh-CN", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+              <p className="text-xs text-muted-foreground mt-1 px-1">
+                {message.timestamp.toLocaleTimeString("zh-CN", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex gap-2">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+              <Bot className="h-4 w-4" />
+            </div>
+            <div className="bg-muted p-3 rounded-2xl">
+              <div className="flex gap-1">
+                <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.2s]" />
+                <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.4s]" />
               </div>
             </div>
-          ))}
-          {isLoading && (
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                <Bot className="h-4 w-4" />
-              </div>
-              <div className="bg-muted p-3 rounded-lg">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.2s]" />
-                  <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce [animation-delay:0.4s]" />
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
 
-        <div className="flex gap-2">
+      <div className="border-t border-border bg-card">
+        <QuickActionCards />
+        
+        <div className="p-4 flex gap-2">
           <input
             ref={fileInputRef}
             type="file"
@@ -232,6 +230,7 @@ const AIChat = () => {
             size="icon"
             onClick={() => fileInputRef.current?.click()}
             disabled={isLoading}
+            className="flex-shrink-0"
           >
             <Camera className="h-4 w-4" />
           </Button>
@@ -239,15 +238,20 @@ const AIChat = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="输入消息或拍照识别食物..."
+            placeholder="输入消息..."
             disabled={isLoading}
+            className="flex-1"
           />
-          <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
+          <Button 
+            onClick={handleSend} 
+            disabled={isLoading || !input.trim()}
+            className="flex-shrink-0"
+          >
             <Send className="h-4 w-4" />
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
