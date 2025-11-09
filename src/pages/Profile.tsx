@@ -36,7 +36,7 @@ const Profile = () => {
         <div className="px-4 py-3 space-y-3">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold text-foreground">个人档案</h1>
-            <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/health")}>
               <span className="text-sm">返回</span>
             </Button>
           </div>
