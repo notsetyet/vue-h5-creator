@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Utensils } from "lucide-react";
+import { Send, Utensils, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -64,9 +64,14 @@ const HealthAssistant = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="sticky top-0 z-10 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="px-4 py-3">
-          <h1 className="text-xl font-bold text-foreground">健康管家</h1>
-          <p className="text-xs text-muted-foreground">智能助手为您提供健康建议</p>
+        <div className="px-4 py-3 flex items-start justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-foreground">健康管家</h1>
+            <p className="text-xs text-muted-foreground">智能助手为您提供健康建议</p>
+          </div>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
+            <User className="h-5 w-5" />
+          </Button>
         </div>
       </header>
 

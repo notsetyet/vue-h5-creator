@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { UtensilsCrossed, LineChart, BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import FoodLog from "./FoodLog";
 import NutritionAnalysis from "./NutritionAnalysis";
 import RecipeRecommendations from "./RecipeRecommendations";
 
-type ActionType = "log" | "analysis" | "recipes" | null;
+type ActionType = "analysis" | "recipes" | null;
 
 const QuickActionCards = () => {
+  const navigate = useNavigate();
   const [selectedAction, setSelectedAction] = useState<ActionType>(null);
 
   const actions = [
@@ -34,14 +35,16 @@ const QuickActionCards = () => {
     },
   ];
 
-  const handleActionClick = (actionId: ActionType) => {
-    setSelectedAction(actionId);
+  const handleActionClick = (actionId: ActionType | "log") => {
+    if (actionId === "log") {
+      navigate("/profile?tab=diet");
+    } else {
+      setSelectedAction(actionId);
+    }
   };
 
   const renderDialogContent = () => {
     switch (selectedAction) {
-      case "log":
-        return <FoodLog />;
       case "analysis":
         return <NutritionAnalysis />;
       case "recipes":
