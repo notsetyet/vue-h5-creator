@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { UtensilsCrossed, LineChart, BookOpen, ChevronDown, ChevronUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { UtensilsCrossed, LineChart, BookOpen } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import FoodLog from "./FoodLog";
 import NutritionAnalysis from "./NutritionAnalysis";
@@ -10,7 +9,6 @@ type ActionType = "log" | "analysis" | "recipes" | null;
 
 const QuickActionCards = () => {
   const [selectedAction, setSelectedAction] = useState<ActionType>(null);
-  const [isExpanded, setIsExpanded] = useState(true);
 
   const actions = [
     {
@@ -60,40 +58,19 @@ const QuickActionCards = () => {
 
   return (
     <>
-      <div className="p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-medium text-muted-foreground">快捷功能</p>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="h-6 px-2"
-          >
-            {isExpanded ? (
-              <ChevronUp className="h-3 w-3" />
-            ) : (
-              <ChevronDown className="h-3 w-3" />
-            )}
-          </Button>
+      <div className="px-4 py-2">
+        <div className="flex gap-2 items-start">
+          {actions.map((action) => (
+            <button
+              key={action.id}
+              onClick={() => handleActionClick(action.id)}
+              className={`${action.color} rounded-lg p-2 flex flex-col items-center gap-1 transition-all hover:scale-105 active:scale-95 min-w-[70px]`}
+            >
+              <action.icon className="h-4 w-4" />
+              <p className="text-[10px] font-medium whitespace-nowrap">{action.title}</p>
+            </button>
+          ))}
         </div>
-
-        {isExpanded && (
-          <div className="grid grid-cols-3 gap-2">
-            {actions.map((action) => (
-              <button
-                key={action.id}
-                onClick={() => handleActionClick(action.id)}
-                className={`${action.color} rounded-xl p-3 flex flex-col items-center gap-2 transition-all hover:scale-105 active:scale-95`}
-              >
-                <action.icon className="h-5 w-5" />
-                <div className="text-center">
-                  <p className="text-xs font-medium">{action.title}</p>
-                  <p className="text-[10px] opacity-70">{action.description}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       <Dialog open={selectedAction !== null} onOpenChange={() => setSelectedAction(null)}>
